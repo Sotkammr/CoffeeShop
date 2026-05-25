@@ -217,7 +217,6 @@ CSV-файл сохраняется на рабочий стол.
 Добавьте скриншоты интерфейса в папку `screenshots/` и укажите их в этом разделе.
 
 ```markdown
-![Окно входа](screenshots/login.png)
 ![Новая продажа](screenshots/new-sale.png)
 ![История продаж](screenshots/sales-history.png)
 ![Товары](screenshots/products.png)
