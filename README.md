@@ -222,6 +222,10 @@ CSV-файл сохраняется на рабочий стол.
 ![Товары](screenshots/products.png)
 ```
 
+![Новая продажа](screenshots/new-sale.png)
+![История продаж](screenshots/sales-history.png)
+![Товары](screenshots/products.png)
+
 ## Как загрузить проект на GitHub
 
 ### Вариант 1. Через сайт GitHub
