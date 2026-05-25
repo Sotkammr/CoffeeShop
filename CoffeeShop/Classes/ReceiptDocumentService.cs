@@ -149,6 +149,11 @@ namespace CoffeeShop.Classes
             var items = sale.Items ?? Enumerable.Empty<SaleItem>();
             var builder = new StringBuilder();
 
+
+
+
+
+
             foreach (var item in items)
             {
                 if (item == null)
