@@ -1,0 +1,115 @@
+﻿<Page x:Class="CoffeeShop.Pages.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Главная страница"
+      Loaded="Page_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" 
+                Background="#795548" 
+                Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" 
+                            Orientation="Horizontal" 
+                            x:Name="NavigationPanel">
+
+                    <TextBlock Text="☕" 
+                               FontSize="28" 
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock Text="CoffeeShop" 
+                               FontSize="18" 
+                               Foreground="White"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="10,0,30,0"/>
+
+                    <Button x:Name="btnNewSale" 
+                            Content="🛒 Новая продажа" 
+                            Background="White" 
+                            Foreground="#795548"
+                            FontWeight="Bold"
+                            Padding="20,10"
+                            Margin="0,0,10,0"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="btnNewSale_Click"/>
+
+                    <Button x:Name="btnSalesHistory" 
+                            Content="📊 История продаж" 
+                            Background="White" 
+                            Foreground="#795548"
+                            FontWeight="Bold"
+                            Padding="20,10"
+                            Margin="0,0,10,0"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="btnSalesHistory_Click"/>
+
+                    <Button x:Name="btnProducts" 
+                            Content="📦 Товары" 
+                            Background="White" 
+                            Foreground="#795548"
+                            FontWeight="Bold"
+                            Padding="20,10"
+                            Margin="0,0,10,0"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="btnProducts_Click"/>
+
+                    <Button x:Name="btnProfile" 
+                            Content="👤 Мой профиль" 
+                            Background="White" 
+                            Foreground="#795548"
+                            FontWeight="Bold"
+                            Padding="20,10"
+                            Margin="0,0,10,0"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="btnProfile_Click"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" 
+                            HorizontalAlignment="Right" 
+                            Orientation="Horizontal">
+
+                    <TextBlock Text="👤" 
+                               FontSize="18" 
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock x:Name="lblUserInfo" 
+                               Foreground="White" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="5,0,20,0"
+                               FontSize="16"/>
+                </StackPanel>
+                <Button x:Name="btnLogout" 
+                        Grid.Column="2"
+                        Content="🚪 Выйти" 
+                        Background="#D32F2F" 
+                        Foreground="White" 
+                        FontWeight="Bold"
+                        Padding="20,10"
+                        Margin="20,0,0,0"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="btnLogout_Click"/>
+            </Grid>
+        </Border>
+        <Frame x:Name="MainFrame" 
+               Grid.Row="1"
+               NavigationUIVisibility="Hidden"
+               Background="#F5F5F5"/>
+    </Grid>
+</Page>
