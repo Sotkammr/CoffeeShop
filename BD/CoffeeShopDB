@@ -1,0 +1,205 @@
+CREATE DATABASE CoffeeShopDB
+USE CoffeeShopDB;
+GO
+
+CREATE TABLE Positions (
+    Id_Position INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Categories (
+    Id_Category INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE PaymentMethods (
+    Id_Method INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Employees (
+    Id_Employee INT PRIMARY KEY IDENTITY(1,1),
+    Surname NVARCHAR(50) NOT NULL,
+    Name NVARCHAR(50) NOT NULL,
+    Patronymic NVARCHAR(50),
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100),
+    Id_Position INT,
+    EmployeeCode NVARCHAR(20),
+    HireDate DATETIME,
+    IsActive BIT DEFAULT 1,
+    FOREIGN KEY (Id_Position) REFERENCES Positions(Id_Position)
+);
+
+CREATE TABLE AuthData (
+    Id_Auth INT PRIMARY KEY IDENTITY(1,1),
+    Id_Employee INT,
+    Login NVARCHAR(50) UNIQUE NOT NULL,
+    Password NVARCHAR(50) NOT NULL,
+    LastLoginDate DATETIME,
+    FOREIGN KEY (Id_Employee) REFERENCES Employees(Id_Employee)
+);
+
+CREATE TABLE Products (
+    Id_Product INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(MAX),
+    Price DECIMAL(10,2) NOT NULL,
+    Id_Category INT,
+    QuantityInStock INT DEFAULT 100,
+    IsActive BIT DEFAULT 1,
+    FOREIGN KEY (Id_Category) REFERENCES Categories(Id_Category)
+);
+
+CREATE TABLE Sales (
+    Id_Sale INT PRIMARY KEY IDENTITY(1,1),
+    SaleNumber NVARCHAR(20) UNIQUE NOT NULL,
+    SaleDate DATETIME NOT NULL,
+    Id_Employee INT,
+    Id_PaymentMethod INT,
+    TotalAmount DECIMAL(10,2) NOT NULL,
+    FinalAmount DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (Id_Employee) REFERENCES Employees(Id_Employee),
+    FOREIGN KEY (Id_PaymentMethod) REFERENCES PaymentMethods(Id_Method)
+);
+
+CREATE TABLE SaleItems (
+    Id_Item INT PRIMARY KEY IDENTITY(1,1),
+    Id_Sale INT,
+    Id_Product INT,
+    Quantity INT NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    Total DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (Id_Sale) REFERENCES Sales(Id_Sale),
+    FOREIGN KEY (Id_Product) REFERENCES Products(Id_Product)
+);
+GO
+CREATE VIEW View_UserAuth AS
+SELECT
+    e.Id_Employee,
+    e.Surname + ' ' + e.Name + ' ' + ISNULL(e.Patronymic, '') AS FullName,
+    p.Name AS Position,
+    a.Login,
+    a.Password
+FROM Employees e
+JOIN AuthData a ON e.Id_Employee = a.Id_Employee
+JOIN Positions p ON e.Id_Position = p.Id_Position
+WHERE e.IsActive = 1;
+GO
+INSERT INTO Positions (Name) VALUES
+('Администратор'),
+('Бариста'),
+('Кассир'),
+('Менеджер'),
+('Старший бариста');
+
+INSERT INTO Categories (Name) VALUES
+('Кофе'),
+('Чай'),
+('Выпечка'),
+('Десерты'),
+('Напитки'),
+('Сэндвичи');
+
+INSERT INTO PaymentMethods (Name) VALUES
+('Наличные'),
+('Карта'),
+('Бесконтактно'),
+('Мобильное приложение');
+
+INSERT INTO Employees (Surname, Name, Patronymic, Phone, Email, Id_Position, EmployeeCode, HireDate)
+VALUES ('Главный', 'Админ', 'Системович', '+7(999)111-11-11', 'admin@coffee.shop', 1, 'ADMIN001', GETDATE());
+
+DECLARE @AdminId INT = SCOPE_IDENTITY();
+
+INSERT INTO AuthData (Id_Employee, Login, Password, LastLoginDate)
+VALUES (@AdminId, 'admin', 'admin123', GETDATE());
+
+INSERT INTO Employees (Surname, Name, Patronymic, Phone, Email, Id_Position, EmployeeCode, HireDate)
+VALUES ('Кофеин', 'Бариста', 'Ароматович', '+7(999)222-22-22', 'barista@coffee.shop', 2, 'BAR001', GETDATE());
+
+DECLARE @BaristaId INT = SCOPE_IDENTITY();
+
+INSERT INTO AuthData (Id_Employee, Login, Password, LastLoginDate)
+VALUES (@BaristaId, 'barista', '123456', GETDATE());
+
+INSERT INTO Employees (Surname, Name, Patronymic, Phone, Email, Id_Position, EmployeeCode, HireDate)
+VALUES ('Денежный', 'Кассир', 'Рублевич', '+7(999)333-33-33', 'cashier@coffee.shop', 3, 'CASH001', GETDATE());
+
+DECLARE @CashierId INT = SCOPE_IDENTITY();
+
+INSERT INTO AuthData (Id_Employee, Login, Password, LastLoginDate)
+VALUES (@CashierId, 'cashier', '123456', GETDATE());
+
+INSERT INTO Employees (Surname, Name, Patronymic, Phone, Email, Id_Position, EmployeeCode, HireDate)
+VALUES ('Организатор', 'Менеджер', 'Петрович', '+7(999)444-44-44', 'manager@coffee.shop', 4, 'MGR001', GETDATE());
+
+DECLARE @ManagerId INT = SCOPE_IDENTITY();
+
+INSERT INTO AuthData (Id_Employee, Login, Password, LastLoginDate)
+VALUES (@ManagerId, 'manager', '123456', GETDATE());
+
+INSERT INTO Products (Name, Description, Price, Id_Category, QuantityInStock) VALUES
+('Эспрессо', 'Классический эспрессо 30мл', 120, 1, 100),
+('Капучино', 'Эспрессо с молочной пеной', 180, 1, 100),
+('Латте', 'Кофе с большим количеством молока', 190, 1, 100),
+('Американо', 'Эспрессо с горячей водой', 140, 1, 100),
+('Мокачино', 'Кофе с шоколадом', 200, 1, 80),
+('Раф', 'Сливочный кофе с ванилью', 220, 1, 80),
+('Флэт Уайт', 'Двойной эспрессо с микропеной', 200, 1, 80);
+
+INSERT INTO Products (Name, Description, Price, Id_Category, QuantityInStock) VALUES
+('Чай черный', 'Классический черный чай', 100, 2, 150),
+('Чай зеленый', 'Зеленый чай с жасмином', 100, 2, 150),
+('Чай фруктовый', 'Фруктовый чай с ягодами', 120, 2, 120),
+('Чай матча', 'Японский чай матча', 250, 2, 50),
+('Чай облепиховый', 'Чай с облепихой и медом', 180, 2, 80);
+
+INSERT INTO Products (Name, Description, Price, Id_Category, QuantityInStock) VALUES
+('Круассан', 'Французский круассан с маслом', 80, 3, 50),
+('Круассан с шоколадом', 'Круассан с шоколадной начинкой', 100, 3, 50),
+('Синнабон', 'Булочка с корицей', 150, 3, 40),
+('Маффин', 'Маффин с ягодами', 120, 3, 45),
+('Чизкейк', 'Нью-йорк чизкейк', 180, 4, 30),
+('Тирамису', 'Итальянский десерт', 200, 4, 30),
+('Эклер', 'Заварное пирожное', 90, 4, 40);
+
+INSERT INTO Products (Name, Description, Price, Id_Category, QuantityInStock) VALUES
+('Сок апельсиновый', 'Свежевыжатый апельсиновый сок', 150, 5, 60),
+('Лимонад', 'Домашний лимонад', 130, 5, 70),
+('Морс', 'Ягодный морс', 120, 5, 70),
+('Смузи', 'Ягодный смузи', 180, 5, 50),
+('Сэндвич с курицей', 'Сэндвич с куриным филе', 150, 6, 40),
+('Сэндвич с лососем', 'Сэндвич с красной рыбой', 250, 6, 30),
+('Клаб-сэндвич', 'Двойной сэндвич с беконом', 280, 6, 25);
+
+INSERT INTO Sales (SaleNumber, SaleDate, Id_Employee, Id_PaymentMethod, TotalAmount, FinalAmount)
+VALUES ('SALE-20240301001', GETDATE(), 2, 1, 420, 420);
+
+DECLARE @SaleId1 INT = SCOPE_IDENTITY();
+
+INSERT INTO SaleItems (Id_Sale, Id_Product, Quantity, Price, Total) VALUES
+(1, 1, 2, 120, 240),
+(1, 2, 1, 180, 180);
+
+INSERT INTO Sales (SaleNumber, SaleDate, Id_Employee, Id_PaymentMethod, TotalAmount, FinalAmount)
+VALUES ('SALE-20240301002', DATEADD(HOUR, -2, GETDATE()), 4, 2, 350, 350);
+
+DECLARE @SaleId2 INT = SCOPE_IDENTITY();
+
+INSERT INTO SaleItems (Id_Sale, Id_Product, Quantity, Price, Total) VALUES
+(2, 3, 1, 190, 190),
+(2, 13, 2, 80, 160);
+
+INSERT INTO Sales (SaleNumber, SaleDate, Id_Employee, Id_PaymentMethod, TotalAmount, FinalAmount)
+VALUES ('SALE-20240228001', DATEADD(DAY, -1, GETDATE()), 2, 3, 540, 540);
+
+DECLARE @SaleId3 INT = SCOPE_IDENTITY();
+
+INSERT INTO SaleItems (Id_Sale, Id_Product, Quantity, Price, Total) VALUES
+(3, 4, 3, 140, 420),
+(3, 18, 1, 120, 120);
+
+SELECT Id_Product, Name, Price, QuantityInStock FROM Products;
+SELECT * FROM View_UserAuth;
+GO
